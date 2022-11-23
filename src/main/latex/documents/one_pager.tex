@@ -1,0 +1,80 @@
+%! Author = florian
+%! Date = 30.10.22
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{url}
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{glossaries}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+
+%Glossary
+\makeglossaries
+\newglossaryentry{EO}{
+    name=EO,
+    description={An OOP paradigm}
+}
+
+\newglossaryentry{OOP}{
+    name=OOP,
+    description={A programming paradigm that is centered around objects}
+}
+
+\newglossaryentry{API}{
+    name=API,
+    description={An application programming interface
+    allows two applications or a programmer and a library to talk to each other},
+    plural={APIs}
+}
+
+\title{Elegant Objects: A OOP Paradigm}
+\author{Florian Weingartshofer}
+\date{November 3, 2022}
+
+% Document
+\begin{document}
+    \selectlanguage{english}
+    \maketitle
+
+
+    \section{Introduction}\label{sec:motivation}
+    Elegant objects (\gls{EO}) is an object-orientated programming (\gls{OOP}) paradigm with some extreme viewpoints on traditional methods.
+    For example, null references or static methods are taboo.
+    Renouncing some traditional software development methods should achieve a cleaner, more maintainable, and more readable codebase.
+    \Gls{EO} also forces the programmer to think purely in objects and \gls{OOP} and not other programming paradigms, like procedural.
+
+
+
+    \section{Content of the Paper}\label{sec:content-of-the-paper}
+    The paper will first describe the twelve principles of \gls{EO} and show how they work by using some examples of the project that is developed while writing the paper.
+
+    Furthermore, the paper will conclude how and if the codebase is more maintainable.
+
+    Lastly, the paper will describe how the developer experience changes by using \gls{EO}.
+    The most important aspects are:
+    \begin{itemize}
+        \item Developer productivity
+        \item Code readability
+        \item Ease of understanding \gls{EO} concepts
+    \end{itemize}
+
+
+    \section{Project}\label{sec:project}
+    The project will use the Spotify web \gls{API}\footnote{\url{https://developer.spotify.com/documentation/web-api/}} to gather song data.
+    The data is then processed, saved to a database, and then will be shown in a web interface.
+    The whole application should be developed using \gls{EO} and libraries that respect EO principles.
+    If it is not possible to use only EO libraries, other libraries should be wrapped in a way that the resulting objects use \gls{EO} practices.
+
+    \section{Organization}\label{sec:organization}
+    This and the following documents will be written in English.
+
+    \printglossary
+
+\end{document}
