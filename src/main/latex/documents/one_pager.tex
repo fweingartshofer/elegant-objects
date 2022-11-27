@@ -36,7 +36,7 @@
 
 \title{Elegant Objects: A OOP Paradigm}
 \author{Florian Weingartshofer}
-\date{November 3, 2022}
+\date{November 23, 2022}
 
 % Document
 \begin{document}
@@ -49,7 +49,6 @@
     For example, null references or static methods are taboo.
     Renouncing some traditional software development methods should achieve a cleaner, more maintainable, and more readable codebase.
     \Gls{EO} also forces the programmer to think purely in objects and \gls{OOP} and not other programming paradigms, like procedural.
-
 
 
     \section{Content of the Paper}\label{sec:content-of-the-paper}
@@ -67,10 +66,15 @@
 
 
     \section{Project}\label{sec:project}
-    The project will use the Spotify web \gls{API}\footnote{\url{https://developer.spotify.com/documentation/web-api/}} to gather song data.
-    The data is then processed, saved to a database, and then will be shown in a web interface.
-    The whole application should be developed using \gls{EO} and libraries that respect EO principles.
-    If it is not possible to use only EO libraries, other libraries should be wrapped in a way that the resulting objects use \gls{EO} practices.
+    The project is an implementation of google guava\footnote{\url{https://github.com/google/guava}}.
+    Not all guava features will be implemented, but some selected examples, that will show how \gls{EO} influences the code structure and patterns that are used.
+    Some aspects of guava that can be implemented are:
+    \begin{itemize}
+        \item Eventbus
+        \item Ranges
+        \item String utils
+    \end{itemize}
+
 
     \section{Organization}\label{sec:organization}
     This and the following documents will be written in English.
