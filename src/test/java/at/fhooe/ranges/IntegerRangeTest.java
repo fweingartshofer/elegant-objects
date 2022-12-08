@@ -44,4 +44,16 @@ class IntegerRangeTest {
         assertEquals(expected, res);
     }
 
+    @Test
+    void testIteratorWithNegativeTests() {
+        // given
+        var it = new IntegerRange(5, 0, -1);
+        // when
+        var res = it.collect();
+
+        // then
+        var expected = List.of(5, 4, 3, 2, 1);
+        assertEquals(expected, res);
+    }
+
 }

@@ -12,11 +12,18 @@ public class IntegerRange implements Range<Integer> {
 
     /***
      * Create an integer range, that can be iterated
+     * Utilizing an overflow for ranges is illegal and leads to an IllegalArgumentException at construction time, as it would lead to an illegal state of the rage object.
      * @param from start of the range
      * @param to exclusive end
      * @param step step size
+     * @throws IllegalArgumentException if <code>from</code> is lower than <code>to</code> and <code>step</code> is a negative number,
+     * <code>from</code> is bigger than <code>to</code> and <code>step</code> is a positive number,
+     * or <code>step</code> is zero
      */
     public IntegerRange(int from, int to, int step) {
+        if (from > to && step > 0 || from < to && step < 0 || step == 0) {
+            throw new IllegalArgumentException();
+        }
         this.from = from;
         this.to = to;
         this.step = step;
@@ -26,6 +33,7 @@ public class IntegerRange implements Range<Integer> {
      * Create an integer range, that can be iterated
      * @param from start of the range
      * @param to exclusive end
+     * @throws IllegalArgumentException if <code>from</code> is lower than <code>to</code>
      */
     public IntegerRange(int from, int to) {
         this(from, to, 1);
@@ -34,6 +42,7 @@ public class IntegerRange implements Range<Integer> {
     /***
      * Create an integer range, that can be iterated
      * @param to exclusive end
+     * @throws IllegalArgumentException if <code>to</code> is a negative number
      */
     public IntegerRange(int to) {
         this(0, to, 1);
@@ -46,13 +55,16 @@ public class IntegerRange implements Range<Integer> {
 
     private class IntegerRangeIterator implements ImmutableIterator<Integer> {
         private final int current;
+
         private IntegerRangeIterator(int current) {
             this.current = current;
         }
 
         @Override
         public boolean hasNext() {
-            return get() < to;
+            return step > 0
+                    ? get() < to
+                    : get() > to;
         }
 
         @Override
