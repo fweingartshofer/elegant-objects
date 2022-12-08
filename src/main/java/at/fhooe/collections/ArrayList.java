@@ -78,7 +78,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ArrayList<T> concat(ImmutableCollection<T> others) {
-        Object[] newData = Arrays.copyOf(data, data.length + others.size() - 1);
+        Object[] newData = Arrays.copyOf(data, data.length + others.size());
         Object[] othersArray = others.toArray();
         for(int i : new IntegerRange(data.length, data.length + others.size())) {
             newData[i] = othersArray[i - data.length];
@@ -96,6 +96,9 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ImmutableCollection<T> tail() {
+        if(isEmpty()) {
+            return new ArrayList<>();
+        }
         Object[] other = new Object[data.length - 1];
         System.arraycopy(data, 1, other, 0, data.length - 1);
         return new ArrayList<>(other);
@@ -136,6 +139,9 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ListIterator<T> listIterator(int index) {
+        if(index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
         return new ArrayListIterator(index).iterator();
     }
 
@@ -182,7 +188,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
         @Override
         public boolean hasPrevious() {
-            return index > 0;
+            return index >= 0;
         }
 
         @Override

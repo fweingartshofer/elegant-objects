@@ -2,7 +2,7 @@ package at.fhooe.iterators;
 
 import java.util.ListIterator;
 
-public class ListIteratorAdapter<T> implements ListIterator<T> {
+public final class ListIteratorAdapter<T> implements ListIterator<T> {
 
     private ImmutableListIterator<T> iterator;
 
