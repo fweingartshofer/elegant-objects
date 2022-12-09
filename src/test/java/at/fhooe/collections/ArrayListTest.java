@@ -8,10 +8,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ArrayListTest {
+
+    @Test
+    void initializingWithNullElement_doesNotThrow() {
+        assertDoesNotThrow(() -> new ArrayList<>(1, null, 2));
+    }
+
+    @Test
+    void initializingWithNullReference_throws() {
+        assertThrows(NullPointerException.class, () -> new ArrayList<>((Object[]) null));
+    }
+
     @Test
     void newArrayList_isEmpty() {
         assertThat(new ArrayList<>(), is(empty()));
@@ -35,6 +45,11 @@ class ArrayListTest {
     @Test
     void arrayList_containsElement() {
         assertThat(new ArrayList<>(1, 2, 3), hasItem(3));
+    }
+
+    @Test
+    void arrayList_containsNullElement() {
+        assertTrue(new ArrayList<>(1, 2, null).contains(null));
     }
 
     @Test
@@ -68,6 +83,11 @@ class ArrayListTest {
     }
 
     @Test
+    void arrayListContainsAll_throws() {
+        assertThrows(NullPointerException.class, () -> new ArrayList<>().containsAll(null));
+    }
+
+    @Test
     void arrayListConcat_addsNewElement() {
         assertThat(new ArrayList<>(1, 2, 3).concat(2), contains(1, 2, 3, 2));
     }
@@ -75,6 +95,11 @@ class ArrayListTest {
     @Test
     void arrayListConcat_newLengthCorrect() {
         assertThat(new ArrayList<>(1, 2, 3).concat(2), hasSize(4));
+    }
+
+    @Test
+    void arrayListConcatNull_doesNotThrow() {
+        assertDoesNotThrow(() -> new ArrayList<>().concat((Object)null));
     }
 
     @Test
@@ -93,6 +118,11 @@ class ArrayListTest {
                         .concat(new ArrayList<>(4, 5, 6)),
                 hasSize(6)
         );
+    }
+
+    @Test
+    void arrayListConcatMany_throws() {
+        assertThrows(NullPointerException.class, () -> new ArrayList<>().concat(null));
     }
 
     @Test
@@ -136,6 +166,11 @@ class ArrayListTest {
     }
 
     @Test
+    void arrayListIndexOf_doesNotThrow() {
+        assertDoesNotThrow(() -> new ArrayList<>((Object)null).indexOf(null));
+    }
+
+    @Test
     void arrayListLastIndexOf_returnsCorrectIndex() {
         assertThat(new ArrayList<>(1, 2, 2, 3).lastIndexOf(2), is(2));
     }
@@ -143,6 +178,11 @@ class ArrayListTest {
     @Test
     void arrayListLastIndexOf_returnsNegativeOne() {
         assertThat(new ArrayList<>(1, 2, 2, 3).lastIndexOf(4), is(-1));
+    }
+
+    @Test
+    void arrayListLastIndexOf_doesNotThrow() {
+        assertDoesNotThrow(() -> new ArrayList<>((Object)null).lastIndexOf(null));
     }
 
     @Test
@@ -196,11 +236,16 @@ class ArrayListTest {
     }
 
     @Test
-    void arrayListSplice_throws() {
+    void arrayListSplice_throwsIndexOutBoundsException() {
         assertThrows(
                 IndexOutOfBoundsException.class,
                 () -> new ArrayList<>(1, 2, 3, 4, 5, 6, 7, 8, 9)
                         .splice(new IntegerRange(2, 11))
         );
+    }
+
+    @Test
+    void arrayListSplice_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ArrayList<>().splice(null));
     }
 }

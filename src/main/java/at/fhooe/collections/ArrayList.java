@@ -5,6 +5,8 @@ import at.fhooe.ranges.IntegerRange;
 
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 public class ArrayList<T> implements ImmutableList<T>, Spliceable {
     private final Object[] data;
 
@@ -17,6 +19,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
      * @param data array to start with
      */
     public ArrayList(Object... data) {
+        requireNonNull(data);
         this.data = Arrays.copyOf(data, data.length);
     }
 
@@ -46,19 +49,21 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
+        if (a == null) {
+            return (T1[]) toArray();
+        }
         if (a.length < data.length) {
             return (T1[]) Arrays.copyOf(data, data.length, a.getClass());
         }
         System.arraycopy(data, 0, a, 0, data.length);
-        if (a.length > data.length) {
-            a[data.length] = null;
-        }
         return a;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        requireNonNull(c);
         for (Object other : c) {
             for (Object item : data) {
                 if (!item.equals(other)) {
@@ -78,9 +83,10 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ArrayList<T> concat(ImmutableCollection<T> others) {
+        requireNonNull(others);
         Object[] newData = Arrays.copyOf(data, data.length + others.size());
         Object[] othersArray = others.toArray();
-        for(int i : new IntegerRange(data.length, data.length + others.size())) {
+        for (int i : new IntegerRange(data.length, data.length + others.size())) {
             newData[i] = othersArray[i - data.length];
         }
         return new ArrayList<>(newData);
@@ -96,7 +102,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ImmutableCollection<T> tail() {
-        if(isEmpty()) {
+        if (isEmpty()) {
             return new ArrayList<>();
         }
         Object[] other = new Object[data.length - 1];
@@ -115,7 +121,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
     @Override
     public int indexOf(Object o) {
         for (int i : new IntegerRange(0, size())) {
-            if (o.equals(data[i])) {
+            if (Objects.equals(o, data[i])) {
                 return i;
             }
         }
@@ -125,7 +131,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
     @Override
     public int lastIndexOf(Object o) {
         for (int i : new IntegerRange(size() - 1, -1, -1)) {
-            if (o.equals(data[i])) {
+            if (Objects.equals(o, data[i])) {
                 return i;
             }
         }
@@ -139,7 +145,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        if(index < 0 || index >= size()) {
+        if (index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException();
         }
         return new ArrayListIterator(index).iterator();
@@ -152,6 +158,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public ArrayList<T> splice(IntegerRange integerRange) {
+        requireNonNull(integerRange);
         ArrayList<T> list = new ArrayList<>();
         for (Integer i : integerRange) {
             list = list.concat(elementAt(i));
@@ -159,6 +166,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     private T elementAt(int index) {
         return (T) data[index];
     }
@@ -177,6 +185,7 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
         }
 
         @Override
+
         public ArrayListIterator next() {
             return new ArrayListIterator(index + 1);
         }

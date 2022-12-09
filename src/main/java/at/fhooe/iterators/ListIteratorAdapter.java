@@ -2,11 +2,14 @@ package at.fhooe.iterators;
 
 import java.util.ListIterator;
 
+import static java.util.Objects.requireNonNull;
+
 public final class ListIteratorAdapter<T> implements ListIterator<T> {
 
     private ImmutableListIterator<T> iterator;
 
     public ListIteratorAdapter(ImmutableListIterator<T> iterator) {
+        requireNonNull(iterator);
         this.iterator = iterator;
     }
 
