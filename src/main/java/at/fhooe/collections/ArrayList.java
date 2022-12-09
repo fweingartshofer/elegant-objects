@@ -4,6 +4,7 @@ import at.fhooe.iterators.ImmutableListIterator;
 import at.fhooe.ranges.IntegerRange;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -108,6 +109,21 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
         Object[] other = new Object[data.length - 1];
         System.arraycopy(data, 1, other, 0, data.length - 1);
         return new ArrayList<>(other);
+    }
+
+    @Override
+    public ImmutableCollection<T> filter(Predicate<T> predicate) {
+        return filter(predicate, 0, new ArrayList<T>());
+    }
+
+    private ImmutableCollection<T> filter(final Predicate<T> predicate,
+                                          final int index,
+                                          final ImmutableCollection<T> c) {
+        if (index == size()) {
+            return c;
+        }
+        final ImmutableCollection<T> list = predicate.test(elementAt(index)) ? c.concat(elementAt(index)) : c;
+        return filter(predicate, index + 1, list);
     }
 
     @Override

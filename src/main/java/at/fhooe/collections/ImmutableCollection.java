@@ -2,6 +2,7 @@ package at.fhooe.collections;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public interface ImmutableCollection<T> extends Collection<T> {
 
@@ -12,6 +13,8 @@ public interface ImmutableCollection<T> extends Collection<T> {
     Optional<T> head();
 
     ImmutableCollection<T> tail();
+
+    ImmutableCollection<T> filter(Predicate<T> predicate);
 
     default boolean addAll(Collection<? extends T> c) {
         throw new UnsupportedOperationException();

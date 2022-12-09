@@ -4,6 +4,9 @@ import at.fhooe.ranges.IntegerRange;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
@@ -99,7 +102,7 @@ class ArrayListTest {
 
     @Test
     void arrayListConcatNull_doesNotThrow() {
-        assertDoesNotThrow(() -> new ArrayList<>().concat((Object)null));
+        assertDoesNotThrow(() -> new ArrayList<>().concat((Object) null));
     }
 
     @Test
@@ -146,6 +149,15 @@ class ArrayListTest {
     }
 
     @Test
+    void arrayListFilter_returnsCorrectElements() {
+        assertThat(
+                new ArrayList<>(1, 2, 3)
+                        .filter(Predicate.not(i -> Objects.equals(i, 3))),
+                hasItems(1, 2)
+        );
+    }
+
+    @Test
     void arrayListGet_throwsOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> new ArrayList<>(1, 2, 3).get(10));
     }
@@ -167,7 +179,7 @@ class ArrayListTest {
 
     @Test
     void arrayListIndexOf_doesNotThrow() {
-        assertDoesNotThrow(() -> new ArrayList<>((Object)null).indexOf(null));
+        assertDoesNotThrow(() -> new ArrayList<>((Object) null).indexOf(null));
     }
 
     @Test
@@ -182,7 +194,7 @@ class ArrayListTest {
 
     @Test
     void arrayListLastIndexOf_doesNotThrow() {
-        assertDoesNotThrow(() -> new ArrayList<>((Object)null).lastIndexOf(null));
+        assertDoesNotThrow(() -> new ArrayList<>((Object) null).lastIndexOf(null));
     }
 
     @Test
