@@ -1,0 +1,16 @@
+%! Author = florian
+%! Date = 11.12.22
+
+% Preamble
+One issue of the no null principle is that the author suggests the usage of empty objects, like a nobody employee as seen in figure\ \ref{fig:empty-object}.
+In the companion blog\footnote{\url{https://www.yegor256.com/2014/05/13/why-null-is-bad.html}} the author writes how null will lead to slowly dying code, instead of failing fast.
+He neglects that the usage of these empty objects can also lead to slowly dying code.
+It appears like an operation was successful, but when calling specific methods it will result in an exception.
+If null is not an acceptable return value, it should result in an exception and not return an empty object.
+Otherwise, this pattern will result in code that checks if an object is the same as an empty object.
+In other words, more complicated null checks.
+
+\begin{figure}[h]
+    \caption{Empty Object}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:empty-object}]{assets/code/Employee.java}\label{fig:empty-object}
+\end{figure}

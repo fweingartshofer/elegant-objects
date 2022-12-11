@@ -1,0 +1,74 @@
+The elegant objects paradigm is based on eleven principles.
+They will be discussed in this chapter, along with some examples and some limitations of the principles.
+
+\subsection{No Null}\label{subsec:no-null}
+Null references has been described as the billion-dollar mistake multiple times\footnote{\url{https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/}}.
+All references have to be checked for null and code bases become polluted by null checks.
+The alternatives to null would be to use in some cases an iterator, like c++ does when working with collections, or to define empty objects of a class.
+For example, if an employee cannot be retrieved from a database, an empty employee object is returned.
+These empty objects have default values for some methods, but will throw an exception for others.
+
+Another more modern alternative is to use `Optional` in Java or nullable types in programming languages that support it, like typescript or c\#.
+This forces the user of a library to check if the object is present and react accordingly.
+For example, the ArrayList\ \ref{fig:optional-usage} that was implemented alongside this paper uses this approach, if the first element of the list is requested.
+The use of Optional forces the user to react to null values, by checking if a value is present in the Optional.
+
+\begin{figure}[h]
+    \caption{Optional Usage in ArrayList}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:optional-usage},firstline=97,lastline=102]{../java/at/fhooe/collections/ArrayList.java}
+    \label{fig:optional-usage}
+\end{figure}
+
+Another solution is to throw an exception.
+This can be used if an operation should not result in a null reference.
+
+Null values are often used in objects that are lazy loading and therefore mutable.
+The subsection\ \ref{subsec:no-mutable-objects} describes the reason to use immutability.
+The main reason why lazy loading is bad, is that it is a bad practice in \gls{OOP}.
+An object will then also be responsible for performance problems, e.g.\ the object will have more than one responsibility,
+the original intend for the object and lazy loading.
+This is a clear violation of the single responsibility principle.
+By using a caching solution paired with aspect orientated programming, it is possible to move the performance problem to a caching library, like Google Guava.\cite{elegant-objects}
+
+\subsection{No Code in Constructors}\label{subsec:no-code-in-constructors}
+Code in constructors is a common practice in \gls{OOP}, but it violates some best practices.
+First, doing calculations in a constructor changes the meaning of the new keyword.
+It turns the new operation into a static operation, which also should not be used, since it is imperative programming and not \gls{OOP}.
+In imperative programming, function does some calculations and returns its result, but in \gls{OOP} the calculations are delayed until they are needed.
+
+Furthermore, doing calculations in the constructor can lead to unexpected side effects for the user.
+For example, if it would be uncommon to read data from a database in a constructor.
+Either the calculation has to be done before constructing the new object or by calling a method on the new object.
+By belaying the calculations to the last possible point, it assures that no result is calculated that is not needed.
+
+
+\subsection{No Getters and Setters}\label{subsec:no-getters-and-setters}
+Getters and setters should not be used.
+They are an inherent risc to data encapsulation.
+When using setters properties can be exposed and the state of the object is altered from the outside.
+Simply, the object cannot encapsulate its own state.\cite{encapsulation}
+Getters and setters expose implementation details.
+If the implementation of an object changes, the getter will also change and in consequence, programs relying on the getter will break.
+
+Another reason against getters and setters is ``Tell, don't ask'', this means instead of asking an object for information, to tell an object to calculation on the information it already has and then return the result.
+By doing this an object is not burdened with the internals of another object.\cite{tell-dont-ask}
+
+One reason why getters and setters are so widespread is because objects are used as data holders.
+This is a common misconception from C and other imperative programming languages.
+Instead of asking for the information from an object, the user should think how the object can calculate a result that is useful.
+
+\subsection{No mutable Objects}\label{subsec:no-mutable-objects}
+A object is immutable if its state cannot be modified after its creation.
+The string implementation is an example for immutable objects.
+There are several reasons for immutable objects.
+
+\begin{itemize}
+    \item Immutable objects are thread-safe, as they cannot change the state after creation
+    \item Immutable objects are easy to construct and to test
+    \item It is easy to avoid temporal coupling
+    \item Immutable objects are side effect free
+\end{itemize}
+
+\subsubsection{Thread Safety}
+
+
