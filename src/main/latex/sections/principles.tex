@@ -8,7 +8,7 @@ The alternatives to null would be to use in some cases an iterator, like c++ doe
 For example, if an employee cannot be retrieved from a database, an empty employee object is returned.
 These empty objects have default values for some methods, but will throw an exception for others.
 
-Another more modern alternative is to use `Optional` in Java or nullable types in programming languages that support it, like typescript or c\#.
+Another more modern alternative is to use \texttt{Optional} in Java or nullable types in programming languages that support it, like typescript or c\#.
 This forces the user of a library to check if the object is present and react accordingly.
 For example, the ArrayList\ \ref{fig:optional-usage} that was implemented alongside this paper uses this approach, if the first element of the list is requested.
 The use of Optional forces the user to react to null values, by checking if a value is present in the Optional.
@@ -41,7 +41,6 @@ For example, if it would be uncommon to read data from a database in a construct
 Either the calculation has to be done before constructing the new object or by calling a method on the new object.
 By belaying the calculations to the last possible point, it assures that no result is calculated that is not needed.
 
-
 \subsection{No Getters and Setters}\label{subsec:no-getters-and-setters}
 Getters and setters should not be used.
 They are an inherent risc to data encapsulation.
@@ -60,7 +59,7 @@ Instead of asking for the information from an object, the user should think how 
 \subsection{No mutable Objects}\label{subsec:no-mutable-objects}
 A object is immutable if its state cannot be modified after its creation.
 The string implementation is an example for immutable objects.
-There are several reasons for immutable objects.
+There are several reasons to prefer immutable objects to mutable ones.
 
 \begin{itemize}
     \item Immutable objects are thread-safe, as they cannot change the state after creation
@@ -70,5 +69,69 @@ There are several reasons for immutable objects.
 \end{itemize}
 
 \subsubsection{Thread Safety}
+Since immutable objects cannot change their state, all threads accessing the object will have the correct and most recent state of the object.
+This means multiple threads can access the same object at the same time, without any clashes.
 
+\subsubsection{Construction and Testing}
+Immutable objects are easy to construct, since all members have to be initialized in the constructor not later.
+Testing them is also closely related with\ \ref{subsubsec:avoid-temporal-coupling}, since it is easy to construct them and when they are constructed they are ready to use.
 
+\subsubsection{Avoid Temporal Coupling}\label{subsubsec:avoid-temporal-coupling}
+Temporal coupling is, when multiple methods have to be called in a particular order or else the result would not be correct.
+A simple example is the \texttt{init}-method, that can be seen in some code bases.\cite{temporal-coupling}
+
+Figure\ \ref{fig:temporal-coupling} is a simple example of what temporal coupling looks like.
+Another example would be the Java \texttt{HttpUrlConnection} class\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html}}.
+
+\begin{figure}[h]
+    \caption{Simple Temporal Coupling}
+    \begin{lstlisting}[language=Java,basicstyle=\tiny,label={lst:temporal-coupling}]
+        class DatabaseConnection {
+            DatabaseConnection(String con) {/*...*/}
+            void init() {} // Open Connection
+
+            // Send Sql query
+            // throws if init is not called
+            Object send(String query) {}
+        }
+    \end{lstlisting}
+    \label{fig:temporal-coupling}
+\end{figure}
+
+Immutable objects make it impossible to depend on temporal coupling, since calling any method will not change the state of the object.
+Temporal coupling only works if the state can be changed.
+
+\subsubsection{Avoid Side-Effects}
+A method with side effects is a method that modifies the state of an object or does something else beyond its scope.
+Important is that any method calling a method with side effects is also a method with side effects.
+For example, logging or writing to a file.
+Another example and bad practice is the modification of incoming parameters\footnote{\url{https://softwareengineering.stackexchange.com/questions/245767/is-modifying-an-incoming-parameter-an-antipattern}}.
+
+Since the state of immutable objects cannot be modified, they are side effect free.
+Obviously, some side effects are necessary, like writing to a database or logging.
+
+\subsection{No Objects with Names ending with -ER}\label{subsec:no-objects-with-names-ending-with--er}
+A object with a name ending with -er indicates that it is a collection of procedures.
+Because these procedures are in a class or object, does not mean this is object orientated programming.
+
+The ``ER''-postifx is not the only naming convention that indicates that a class is a collection of procedures.
+Other examples are ``-Utils`` and ''-able``
+
+Instead of using these naming conventions, classes need to be refactored, that the name represents what the class is and not what it does.
+For example, instead of it being named a \texttt{HuffmanEncoder}, it is named \texttt{HuffmanEncoding} with an \texttt{encode} method.\cite{er-postfix}
+
+\subsection{No static Methods}\label{subsec:no-static-methods}
+A static method is just a procedure, therefore not part of \gls{OOP}.
+It does not matter if the static method is private or public.
+A static method should either be refactored in its own class, for reusability or removed.
+
+For example, \texttt{java.lang.Math} is just a collection procedures for math functions.
+Using any \texttt{Math} procedure tightly couples the code with \texttt{Math}.
+Static methods do not have to conform to an interface.
+Therefore, it is hard to change the implementation of \texttt{Math}.
+Instead, there should be classes that implement parts of the math library accordingly.
+That way, it is simple to change implementations.
+For example, adding a caching mechanism to the implementation.
+
+\subsection{No instanceof, type casting, or reflection}\label{subsec:no-instanceof-type-casting-or-reflection}
+\texttt{instanceof} discriminates against objects, by saying they should adhere to one contract, aka an interface, and then casting them to another.
