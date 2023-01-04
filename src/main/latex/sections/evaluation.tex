@@ -1,7 +1,9 @@
 %! Author = florian
 %! Date = 11.12.22
+\section{Evaluation of the Elegant Objects Paradigm}\label{sec:evaluation-of-the-elegant-objects-paradigm}
+\subsection{Evaluation of the Principles}\label{subsec:evaluation-of-the-principles}
+This section will evaluate some parts of the elegant object principles and describe some shortcomings.
 
-% Preamble
 One issue of the no null principle is that the author suggests the usage of empty objects, like a nobody employee as seen in figure\ \ref{fig:empty-object}.
 In the companion blog\footnote{\url{https://www.yegor256.com/2014/05/13/why-null-is-bad.html}} the author writes how null will lead to slowly dying code, instead of failing fast.
 He neglects that the usage of these empty objects can also lead to slowly dying code.
@@ -25,3 +27,21 @@ In Java, in order to not throw an error, an explicit up cast is required, as can
     \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:up-and-down-casting},firstline=3, lastline=4]{assets/code/Casting.java}
     \label{fig:up-and-down-casting}
 \end{figure}
+
+The subsection\ \ref{subsec:no-statements-in-test-methods-except-assertthat} explains how using only a single statement in unit tests, makes them reusable.
+The problem with this, is that it only works if all classes implement a similar or the same interface.
+Even then the unit tests often cannot be reused, as there are differences in constructors, for example.
+Adhering to an interface and only testing the methods of an interface makes a unit test reusable.
+
+\subsection{Evaluation of the Prototype}\label{subsec:evaluation-of-the-prototype}
+The prototype implements following components:
+\begin{itemize}
+    \item ArrayList
+    \item IntegerRange
+    \item EventBus
+\end{itemize}
+The prototype adheres to the elegant object principles as described in section\ \ref{sec:principles}.
+The full source code can be found at \url{https://github.com/flohero/elegant-objects}.
+
+\subsection{Developer Experience}\label{subsec:developer-experience}
+Testing the components was simple, since they were immutable and only using one assertion statements made tests very readable.

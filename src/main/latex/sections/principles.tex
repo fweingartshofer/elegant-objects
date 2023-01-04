@@ -1,5 +1,11 @@
+\section{Principles}\label{sec:principles}
 The elegant objects paradigm is based on eleven principles.
 They will be discussed in this chapter, along with some examples and some limitations of the principles.
+
+In the elegant objects an object is viewed differently than in \Gls{OOP}.
+An object should never be some kind of data holder, like a struct in C\@.
+An object has to strictly encapsulate its members, which forces developers to use the tell-dont-ask principle.
+In elegant object the object is often compared to a living being and should therefore be respected.\cite{tell-dont-ask-martin-fowler,elegant-objects}
 
 \subsection{No Null}\label{subsec:no-null}
 Null references has been described as the billion-dollar mistake multiple times\footnote{\url{https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/}}.
@@ -39,7 +45,7 @@ In imperative programming, function does some calculations and returns its resul
 Furthermore, doing calculations in the constructor can lead to unexpected side effects for the user.
 For example, if it would be uncommon to read data from a database in a constructor.
 Either the calculation has to be done before constructing the new object or by calling a method on the new object.
-By belaying the calculations to the last possible point, it assures that no result is calculated that is not needed.
+By belaying the calculations to the last possible point, it assures that no result is calculated that is not needed.\cite{elegant-objects}
 
 \subsection{No Getters and Setters}\label{subsec:no-getters-and-setters}
 Getters and setters should not be used.
@@ -54,12 +60,12 @@ By doing this an object is not burdened with the internals of another object.\ci
 
 One reason why getters and setters are so widespread is because objects are used as data holders.
 This is a common misconception from C and other imperative programming languages.
-Instead of asking for the information from an object, the user should think how the object can calculate a result that is useful.
+Instead of asking for the information from an object, the user should think how the object can calculate a result that is useful.\cite{elegant-objects}
 
 \subsection{No mutable Objects}\label{subsec:no-mutable-objects}
 A object is immutable if its state cannot be modified after its creation.
 The string implementation is an example for immutable objects.
-There are several reasons to prefer immutable objects to mutable ones.
+There are several reasons to prefer immutable objects to mutable ones.\cite{elegant-objects}
 
 \begin{itemize}
     \item Immutable objects are thread-safe, as they cannot change the state after creation
@@ -99,7 +105,7 @@ Another example would be the Java \texttt{HttpUrlConnection} class\footnote{\url
 \end{figure}
 
 Immutable objects make it impossible to depend on temporal coupling, since calling any method will not change the state of the object.
-Temporal coupling only works if the state can be changed.
+Temporal coupling only works if the state can be changed.\cite{elegant-objects}
 
 \subsubsection{Avoid Side-Effects}
 A method with side effects is a method that modifies the state of an object or does something else beyond its scope.
@@ -108,7 +114,7 @@ For example, logging or writing to a file.
 Another example and bad practice is the modification of incoming parameters\footnote{\url{https://softwareengineering.stackexchange.com/questions/245767/is-modifying-an-incoming-parameter-an-antipattern}}.
 
 Since the state of immutable objects cannot be modified, they are side effect free.
-Obviously, some side effects are necessary, like writing to a database or logging.
+Obviously, some side effects are necessary, like writing to a database or logging.\cite{elegant-objects}
 
 \subsection{No Objects with Names ending with -ER}\label{subsec:no-objects-with-names-ending-with--er}
 A object with a name ending with -er indicates that it is a collection of procedures.
@@ -118,7 +124,7 @@ The ``ER''-postifx is not the only naming convention that indicates that a class
 Other examples are ``-Utils`` and ''-able``
 
 Instead of using these naming conventions, classes need to be refactored, that the name represents what the class is and not what it does.
-For example, instead of it being named a \texttt{HuffmanEncoder}, it is named \texttt{HuffmanEncoding} with an \texttt{encode} method.\cite{er-postfix}
+For example, instead of it being named a \texttt{HuffmanEncoder}, it is named \texttt{HuffmanEncoding} with an \texttt{encode} method.\cite{er-postfix,elegant-objects}
 
 \subsection{No static Methods}\label{subsec:no-static-methods}
 A static method is just a procedure, therefore not part of \gls{OOP}.
@@ -131,7 +137,74 @@ Static methods do not have to conform to an interface.
 Therefore, it is hard to change the implementation of \texttt{Math}.
 Instead, there should be classes that implement parts of the math library accordingly.
 That way, it is simple to change implementations.
-For example, adding a caching mechanism to the implementation.
+For example, adding a caching mechanism to the implementation.\cite{elegant-objects}
 
 \subsection{No instanceof, type casting, or reflection}\label{subsec:no-instanceof-type-casting-or-reflection}
-\texttt{instanceof} discriminates against objects, by saying they should adhere to one contract, aka an interface, and then casting them to another.
+\texttt{instanceof} discriminates against objects, by saying they should adhere to one contract, aka an interface or class, and then casting them to another.
+So instead of casting objects, so they expose the right methods, the class hierarchy or implementation needs to be changed.
+An example would be \texttt{Iterables.contains}\footnote{\url{https://github.com/google/guava/blob/798803f026bb9517bcf4e0e9ab2d2e0345023182/guava/src/com/google/common/collect/Iterables.java\#L117-L123}}.
+Figure\ \ref{fig:instanceof-example} shows how the contains-method discriminates against objects that are collections and not only Iterables.
+It uses different methods for iterables and collections based on the instanceof.
+A better way would be to use method overloading and implement the method for collections and iterables.
+
+\begin{figure}[h]
+    \caption{Instanceof Example}
+    \lstinputlisting[language=Java, basicstyle=\tiny, label={lst:instanceof-example}, firstline=2, lastline=9]{./assets/code/Iterables.java}
+    \label{fig:instanceof-example}
+\end{figure}
+
+Reflections require the usage of type casting and are therefor not allowed in elegant objects.\cite{elegant-objects}
+
+\subsection{No public methods without a contract}\label{subsec:no-public-methods-without-a-contract}
+A contract or interface is required to use public methods.
+It is based on the Liskov substitution principle, which means that an object can be replaced by its child without changing affecting the program.
+
+An interface ensures that an object implementing it also implements the defined methods exactly as stated in the contract.
+This helps to swap the implementation of the object and ensuring that the contract is not violated.
+This way if an object changes, users of the object still can be sure that the public methods stay the same.
+Other reasons are that an object implementing a contract is easier to mock in unit tests, and it is easy to use them in the decorator pattern, to extend the functionality for example.\cite{elegant-objects}
+
+
+\subsection{No statements in test methods except assertThat}\label{subsec:no-statements-in-test-methods-except-assertthat}
+A unit test with a single statement has multiple benefits.
+Of course, the statement is an assertion, like the \texttt{assertThat} in Hamcrest\footnote{\url{https://hamcrest.org/}}.
+First it forces developers to stop implementing algorithmic code in unit tests, which themselves can contain bugs and therefore need to be tested.
+A unit test with one statement will also be shorter than one with multiple statements.
+It makes a unit test reusable for similar classes.
+A single statement forces objects to be immutable, since it is not possible to call a setter or use some kind of temporal coupling\ \ref{subsubsec:avoid-temporal-coupling}.
+A unit test with one statement is clear on what part of an object it tests, so it is more readable.
+Figure\ \ref{fig:arraylist-unit-test} shows a unit test on an immutable arraylist.\cite{elegant-objects}
+
+\begin{figure}[h]
+    \caption{ArrayList Unit Test}
+    \lstinputlisting[language=Java, basicstyle=\tiny, label={lst:arraylist-unit-test}, firstline=109, lastline=115]{../../test/java/at/fhooe/collections/ArrayListTest.java}
+    \label{fig:arraylist-unit-test}
+\end{figure}
+
+\subsection{No ORM or ActiveRecord}\label{subsec:no-orm-or-activerecord}
+ORM is a pattern that turns objects into passive data holders.
+This violates the tell-dont-ask principle and data encapsulation.
+This leads to multiple issues.
+First, the SQL is not hidden, everywhere where data from the database is needed, SQL is needed.
+Second, it is more difficult to test, as there more objects that need to be mocked, like a \texttt{SessionFactory}.
+
+The alternative is to use SQL-speaking objects, that means every object uses SQL to get information from the database.
+For example, a person has a name and an id in the database, the person object only has an id and will run a select statement to get the name, if it is requested.
+Figure\ \ref{fig:sql-speaking-person-object} shows this example.
+
+\begin{figure}[h]
+    \caption{SQL Speaking Person Object}
+    \lstinputlisting[language=Java, basicstyle=\tiny, label={lst:sql-speaking-person-object}]{./assets/code/SQLPerson.java}
+    \label{fig:sql-speaking-person-object}
+\end{figure}
+
+This looks similar to ActiveRecords, but ActiveRecords just hide the fact that an object is just a data holder and not an object.
+Furthermore, it introduces temporal coupling, which is also not allowed.
+
+Another problem is that relational databases on \Gls{OOP} are very different ways to view data.
+So mapping objects to tables is hard.\cite{orm-vietnam-of-cs,tell-dont-ask-martin-fowler,elegant-objects}
+
+\subsection{No implementation inheritance}\label{subsec:no-implementation-inheritance}
+Implementation inheritance means that methods from one object are copied to the inheritor, but this does mean that the object does not derive characteristics from its parent.
+Implementation inheritance is a procedural technique to reuse code.
+It is better to use composition over inheritance.\cite{elegant-objects}
