@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-public class ArrayList<T> implements ImmutableList<T>, Spliceable {
+public class ArrayList<T> implements ImmutableList<T> {
     private final Object[] data;
 
     public ArrayList() {
@@ -169,17 +169,8 @@ public class ArrayList<T> implements ImmutableList<T>, Spliceable {
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        return splice(new IntegerRange(fromIndex, toIndex));
-    }
-
-    @Override
-    public ArrayList<T> splice(IntegerRange integerRange) {
-        requireNonNull(integerRange);
-        ArrayList<T> list = new ArrayList<>();
-        for (Integer i : integerRange) {
-            list = list.concat(elementAt(i));
-        }
-        return list;
+        return new SplicedList<T>(this)
+                .splice(new IntegerRange(fromIndex, toIndex));
     }
 
     @SuppressWarnings("unchecked")

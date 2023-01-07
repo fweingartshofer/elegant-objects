@@ -10,10 +10,6 @@ public interface ImmutableCollection<T> extends Collection<T> {
 
     ImmutableCollection<T> concat(ImmutableCollection<T> others);
 
-    Optional<T> head();
-
-    ImmutableCollection<T> tail();
-
     ImmutableCollection<T> filter(Predicate<T> predicate);
 
     default boolean addAll(Collection<? extends T> c) {

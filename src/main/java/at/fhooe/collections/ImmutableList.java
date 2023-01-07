@@ -2,8 +2,12 @@ package at.fhooe.collections;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface ImmutableList<T> extends ImmutableCollection<T>, List<T> {
+    Optional<T> head();
+
+    ImmutableCollection<T> tail();
     @Override
     default boolean addAll(Collection<? extends T> c) {
         return ImmutableCollection.super.addAll(c);

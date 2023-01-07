@@ -237,27 +237,4 @@ class ArrayListTest {
         assertThrows(IndexOutOfBoundsException.class,
                 () -> new ArrayList<>(1, 2, 3, 4, 5, 6, 7, 8, 9).subList(2, 11));
     }
-
-    @Test
-    void arrayListSplice_returnsCorrectPortion() {
-        assertThat(
-                new ArrayList<>(1, 2, 3, 4, 5, 6, 7, 8, 9)
-                        .splice(new IntegerRange(2, 6)),
-                contains(3, 4, 5, 6)
-        );
-    }
-
-    @Test
-    void arrayListSplice_throwsIndexOutBoundsException() {
-        assertThrows(
-                IndexOutOfBoundsException.class,
-                () -> new ArrayList<>(1, 2, 3, 4, 5, 6, 7, 8, 9)
-                        .splice(new IntegerRange(2, 11))
-        );
-    }
-
-    @Test
-    void arrayListSplice_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new ArrayList<>().splice(null));
-    }
 }
