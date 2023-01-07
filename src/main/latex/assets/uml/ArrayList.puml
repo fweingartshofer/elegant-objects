@@ -1,0 +1,51 @@
+@startuml
+'https://plantuml.com/class-diagram
+!theme plain
+
+
+package "java.util" {
+  interface Collection<T>
+  interface List<T> extends Collection
+}
+
+package "at.fhooe.collections" {
+    interface ImmutableCollection<T> extends Collection{
+        + concat(T): ImmutableCollection<T>
+        + concat(ImmutableCollection<T>): ImmutableCollection<T>
+        + filter(Predicate<T>): ImmutableCollection<T>
+    }
+
+    interface ImmutableList<T> extends ImmutableCollection, List {
+        + head(): Optional<T>
+        + tail(): ImmutableList<T>
+    }
+
+    class ArrayList<T> implements ImmutableList {
+        + concat(T): ArrayList<T>
+        + concat(ImmutableCollection<T>): ArrayList<T>
+        + filter(Predicate<T>): ImmutableCollection<T>
+        + head(): Optional<T>
+        + tail(): ArrayList<T>
+        + size(): int
+        + isEmpty(): boolean
+        + get(int): T
+        + contains(Object)
+        + containsAll(Collection<?>): boolean
+        + indexOf(Object): int
+        + lastIndexOf(Object): int
+        + toArray(): Object
+        + toArray<T1>(T1[]): T1[]
+        + subList(int, int): List<T>
+        + listIterator(int): ListIterator<T>
+        + listIterator(): ListIterator<T>
+        + iterator(): Iterator<T>
+    }
+}
+
+"java.util" -[hidden]- "at.fhooe.collections"
+
+hide fields
+hide List members
+hide Collection members
+
+@enduml

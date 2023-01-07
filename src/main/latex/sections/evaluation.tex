@@ -29,9 +29,18 @@ In Java, in order to not throw an error, an explicit up cast is required, as can
 \end{figure}
 
 The subsection\ \ref{subsec:no-statements-in-test-methods-except-assertthat} explains how using only a single statement in unit tests, makes them reusable.
-The problem with this, is that it only works if all classes implement a similar or the same interface.
+The problem with this, is that it only works if classes implement a similar, the same interface, or have a similar functionality.
 Even then the unit tests often cannot be reused, as there are differences in constructors, for example.
 Adhering to an interface and only testing the methods of an interface makes a unit test reusable.
+If the interface of two objects is similar enough, the unit tests can be reused.
+This can bee seen in figure\ \ref{fig:reused-unit-tests}.
+
+\begin{figure}[h]
+    \caption{Reusing Unit Tests}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:leftpadded},firstline=20, lastline=24]{../../test/java/at/fhooe/strings/LeftPaddedStringTest.java}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:rightpadded},firstline=19, lastline=23]{../../test/java/at/fhooe/strings/RightPaddedStringTest.java}
+    \label{fig:reused-unit-tests}
+\end{figure}
 
 \subsection{Evaluation of the Prototype}\label{subsec:evaluation-of-the-prototype}
 The prototype implements following components:
@@ -39,9 +48,50 @@ The prototype implements following components:
     \item ArrayList
     \item IntegerRange
     \item EventBus
+    \item String utils
 \end{itemize}
 The prototype adheres to the elegant object principles as described in section\ \ref{sec:principles}.
 The full source code can be found at \url{https://github.com/flohero/elegant-objects}.
 
+The string utils contain a number of different classes, which simplify working with strings in Java.
+They implement the same functionality as the Google Guava Strings class\footnote{\url{https://guava.dev/releases/19.0/api/docs/com/google/common/base/Strings.html}}.
+A major difference between Guava and this implementation is that Guava uses static methods, while the prototype uses only objects, since elegant objects does not allow static methods as described in subsection\ \ref{subsec:no-static-methods}.
+A majority of the classes do not need a dedicated interface, since they only depend on the \texttt{toString}-method.
+The tests are short and can be reused for classes with similar functionality and since nearly all string classes depend on the \texttt{toString}-method the tests are also similarly structured.
+
+The immutable \texttt{ArrayList} implementations needed several workarounds in order to work with elegant objects.
+Since elegant objects uses only immutable objects and the iterator interface is inherently mutable, an adapter has to be implemented to restrict mutable code to specific classes.
+Figure\ \ref{fig:arraylist-class-diagram} shows the class diagram of the \texttt{ArrayList}.
+
+\begin{figure}[h]
+    \caption{Class Diagram of ArrayList}
+    \includegraphics[scale=0.25]{assets/uml/ArrayList-0}
+    \label{fig:arraylist-class-diagram}
+\end{figure}
+
 \subsection{Developer Experience}\label{subsec:developer-experience}
-Testing the components was simple, since they were immutable and only using one assertion statements made tests very readable.
+This subsection describes the developer experience of elegant objects.
+By adhering to the elegant object principles, the resulting objects will have a more concise and clearly defined interface.
+It also results in code that respects the solid principles, which in turn also make a codebase more maintainable and extensible.
+
+The biggest drawback of using elegant objects with Java is that Java depends heavily on mutable objects.
+Therefor, developers using elegant objects have to implement workarounds to limit code where mutable objects are used.
+For example the \texttt{Iterator}-interface\footnote{\url{https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Iterator.html}}, as seen in figure\ \ref{fig:iterator}, is per definition mutable.
+The \texttt{next())}-method returns the next element in the iteration.
+This means an iterator has to depend on an internal state the changes for each iteration.
+For the sake of using only elegant object principle where ever possible an immutable iterator is used, which can be adapted to a Java iterator.
+This decision required additional work and implementing an adapter only to meet the elegant object principles.
+It also limited all mutable code to only a few classes, which made the rest easier to test and read.
+In the end the restriction of mutable objects to specific classes increased the readability of the codebase.
+As developers can be sure, if an object is successfully constructed its state is valid.
+
+\begin{figure}[h]
+    \caption{Iterator Interface}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:iterator}]{assets/code/Iterator.java}
+    \label{fig:iterator}
+\end{figure}
+
+Tests are more readable by using immutable objects.
+The state of an object can be verified, since every method call will return a new object.
+The tests are easier to read, since there is only one assert statement.
+It made it clear what part of an object is tested.
