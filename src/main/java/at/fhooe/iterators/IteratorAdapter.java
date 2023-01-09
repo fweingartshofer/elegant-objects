@@ -1,6 +1,7 @@
 package at.fhooe.iterators;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /***
  * It is not possible to stay true to eop, since an iterator has to be mutable.
@@ -21,6 +22,9 @@ final class IteratorAdapter<T> implements Iterator<T> {
 
     @Override
     public T next() {
+        if(!hasNext()) {
+            throw new NoSuchElementException();
+        }
         T current = immutableIterator.get();
         immutableIterator = immutableIterator.next();
         return current;

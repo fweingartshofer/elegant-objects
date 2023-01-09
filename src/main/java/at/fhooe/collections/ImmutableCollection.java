@@ -1,7 +1,6 @@
 package at.fhooe.collections;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface ImmutableCollection<T> extends Collection<T> {

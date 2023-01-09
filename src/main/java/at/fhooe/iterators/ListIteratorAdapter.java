@@ -1,6 +1,7 @@
 package at.fhooe.iterators;
 
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,6 +21,9 @@ public final class ListIteratorAdapter<T> implements ListIterator<T> {
 
     @Override
     public T next() {
+        if(!hasNext()) {
+            throw new NoSuchElementException();
+        }
         T current = iterator.get();
         iterator = iterator.next();
         return current;
