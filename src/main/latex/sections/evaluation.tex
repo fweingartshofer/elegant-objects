@@ -34,12 +34,22 @@ Even then the unit tests often cannot be reused, as there are differences in con
 Adhering to an interface and only testing the methods of an interface makes a unit test reusable.
 If the interface of two objects is similar enough, the unit tests can be reused.
 This can bee seen in figure\ \ref{fig:reused-unit-tests}.
+Writing only one statement in a unit test, can also negatively impact readability.
+FOr example, figure\ \ref{fig:multiple-statements-can-throw} shows a test, that has multiple method calls in the assert statement.
+It is not clear which statement can throw an exception, if all calls are in the assert statement.
+If the only call, that can throw an exception, would be isolated, it would be easier to read and understand.
 
 \begin{figure}[h]
     \caption{Reusing Unit Tests}
     \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:leftpadded},firstline=20, lastline=24]{../../test/java/at/fhooe/strings/LeftPaddedStringTest.java}
     \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:rightpadded},firstline=19, lastline=23]{../../test/java/at/fhooe/strings/RightPaddedStringTest.java}
     \label{fig:reused-unit-tests}
+\end{figure}
+
+\begin{figure}[h]
+    \caption{Multiple Statements that can throw}
+    \lstinputlisting[language=Java,basicstyle=\tiny,label={lst:multiple-statements-can-throw},firstline=22, lastline=30]{../../test/java/at/fhooe/collections/SplicedListTest.java}
+    \label{fig:multiple-statements-can-throw}
 \end{figure}
 
 \subsection{Evaluation of the Prototype}\label{subsec:evaluation-of-the-prototype}
